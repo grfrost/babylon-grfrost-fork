@@ -26,7 +26,6 @@ package shade.types;
 
 import jdk.incubator.code.Reflect;
 
-//immutable form
 public interface mat2 {
 
     float _00();
@@ -45,17 +44,7 @@ public interface mat2 {
         void _01(float _01);
         void _10(float _10);
         void _11(float _11);
-        default mat2 of(float _00, float _01, float _10, float _11){
-            _00(_00);_01(_01);_10(_10);_11(_11);
-            return this;
-        }
-        default mat2 of(mat2 mat2){
-            of(mat2._00(),mat2._01(),mat2._10(),mat2._11());
-            return this;
-        }
     }
-
-
     static mat2 mat2(float _00, float _01, float _10, float _11) {
         record Impl(float _00, float _01, float _10, float _11) implements mat2 {
         }

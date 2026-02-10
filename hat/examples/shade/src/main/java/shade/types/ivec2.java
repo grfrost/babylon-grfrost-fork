@@ -31,30 +31,17 @@ public interface ivec2 {
     int x();
     int y();
 
-    // A mutable form needed for interface mapping.
-    interface Field extends ivec2 {
-        @Reflect default void schema(){x();y();}
-        void x(int x);
-        void y(int y);
-        default ivec2 of(int x, int y){
-            x(x);y(y);
-            return this;
-        }
-        default ivec2 of(ivec2 ivec2){
-            of(ivec2.x(),ivec2.y());
-            return this;
-        }
-    }
-
-
     static ivec2 ivec2(int x, int y) {
         record Impl(int x, int y) implements ivec2 { }
         return new Impl(x, y);
     }
+
     static ivec2 ivec2(ivec2 ivec2) {return ivec2(ivec2.x(), ivec2.y());}
     static ivec2 ivec2(int scalar) {return ivec2(scalar,scalar);}
 
     static ivec2 add(ivec2 l, ivec2 r) {return ivec2(l.x()+r.x(),l.y()+r.y());}
+
+
     default ivec2 add(ivec2 rhs){return add(this,rhs);}
     default ivec2 add(int scalar){return add(this,ivec2(scalar));}
 

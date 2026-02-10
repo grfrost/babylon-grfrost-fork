@@ -171,12 +171,13 @@ public class FloatImagePanel extends JPanel implements Runnable {
         interpolationThread.start();
     }
 
+    static int desiredFPS = 30;
+    static  double nsPerTick = 1000000000.0 / desiredFPS; // 30 Fixed Updates per second
+
 
     @Override
     public void run() {
         long startTimeNs = System.nanoTime();
-
-        double nsPerTick = 1000000000.0 / 30.0; // 30 Fixed Updates per second
         double delta = 0;
         long lastTimeNs = System.nanoTime();
         while (running) {
@@ -185,27 +186,27 @@ public class FloatImagePanel extends JPanel implements Runnable {
             lastTimeNs = now;
             uniforms.iResolution().x(floatImage.width());
             uniforms.iResolution().y(floatImage.height());
-
             while (delta >= 1) {
                 long diff = lastTimeNs - startTimeNs;
                 long diffMs = diff / 1000000;
-                uniforms.iTime(diffMs);
                 long startNs = System.nanoTime();
                 if (controls.running()) {
+                    uniforms.iTime(diffMs);
                     uniforms.iFrame(uniforms.iFrame() + 1);
                     IntStream.range(0, floatImage.widthXHeight()).parallel().forEach(i -> {
-                        vec2 fragCoord = vec2.vec2(i % floatImage.width(), (float)( i / floatImage.width()));
+                        vec2 fragCoord = vec2.vec2(i % floatImage.width(), (float) (i / floatImage.width()));
                         vec4 inFragColor = vec4.vec4(0);
                         vec4 outFragColor = shader.mainImage(uniforms, inFragColor, fragCoord);
                         floatImage.set(i, outFragColor);
                     });
                     floatImage.sync();
+
+                    long endNs = System.nanoTime();
+                    controls.shaderUs((int) (endNs - startNs) / 1000)
+                            .fps((int) (uniforms.iFrame() * 1000 / diffMs))
+                            .frame((int) uniforms.iFrame())
+                            .elapsedMs((int) diffMs);
                 }
-                long endNs = System.nanoTime();
-                controls.shaderUs((int)(endNs-startNs)/1000)
-                        .fps((int) (uniforms.iFrame() * 1000 / diffMs))
-                        .frame((int) uniforms.iFrame())
-                        .elapsedMs((int) diffMs);
                 delta-=1f;
             }
 
@@ -214,7 +215,7 @@ public class FloatImagePanel extends JPanel implements Runnable {
 
             // Cap the loop to save CPU
             try {
-                Thread.sleep(10);
+                Thread.sleep(2);
             } catch (InterruptedException e) {
             }
         }

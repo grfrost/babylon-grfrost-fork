@@ -24,29 +24,11 @@
  */
 package shade.types;
 
-import jdk.incubator.code.Reflect;
-
-
 public interface vec2 {
     float x();
 
     float y();
 
-    // A mutable form needed for interface mapping.
-    interface Field extends vec2 {
-        @Reflect
-        default void schema(){x();y();}
-        void x(float x);
-        void y(float y);
-        default vec2 of(float x, float y){
-            x(x);y(y);
-            return this;
-        }
-        default vec2 of(vec2 vec2){
-            of(vec2.x(),vec2.y());
-            return this;
-        }
-    }
 
     static vec2 vec2(float x, float y) {
         record Impl(float x, float y) implements vec2 {

@@ -24,34 +24,83 @@
  */
 package shade.types;
 
+import jdk.incubator.code.Reflect;
 import optkl.ifacemapper.BoundSchema;
 import optkl.ifacemapper.Buffer;
 import optkl.ifacemapper.Schema;
 import optkl.util.carriers.ArenaAndLookupCarrier;
 
 public interface Uniforms extends Buffer {
-    interface ivec2Field extends ivec2.Field, Struct {
+
+
+    // A mutable form needed for interface mapping.
+    interface ivec2Field extends ivec2,Struct {
+        @Reflect
+        default void schema(){x();y();}
         void x(int x);
         void y(int y);
+        default ivec2 of(int x, int y){
+            x(x);y(y);
+            return this;
+        }
+        default ivec2 of(ivec2 ivec2){
+            return of(ivec2.x(),ivec2.y());
+        }
     }
 
-    interface vec2Field extends vec2.Field, Struct {
+
+    // A mutable form needed for interface mapping.
+    interface vec2Field extends vec2, Struct  {
+        @Reflect
+        default void schema(){x();y();}
         void x(float x);
         void y(float y);
+        default vec2 of(float x, float y){
+            x(x);y(y);
+            return this;
+        }
+        default vec2 of(vec2 vec2){
+            return of(vec2.x(),vec2.y());
+        }
     }
 
-    interface vec3Field extends vec3.Field, Struct {
+
+    // A mutable variant needed for interface mapping
+    interface vec3Field extends vec3, Struct {
+        @Reflect
+        default void schema(){x();y();z();}
         void x(float x);
         void y(float y);
         void z(float z);
+        default vec3 of(float x, float y, float z){
+            x(x);y(y);z(z);
+            return this;
+        }
+        default vec3 of(vec3 vec3){
+            return of(vec3.x(),vec3.y(),vec3.z());
+        }
     }
 
-    interface vec4Field extends vec4.Field, Struct {
+
+
+
+    // A mutable variant needed for interface mapping
+    interface vec4Field extends vec4, Struct {
+        @Reflect
+        default void schema(){x();y();z();w();}
         void x(float x);
         void y(float y);
         void z(float z);
         void w(float w);
+        default vec4 of(float x, float y, float z, float w){
+            x(x);y(y);z(z);w(w);
+            return this;
+        }
+        default vec4 of(vec4 vec4){
+            return of(vec4.x(),vec4.y(),vec4.z(),vec4.w());
+        }
     }
+
 
     vec2Field fragCoord();
 

@@ -746,10 +746,7 @@ void mainImage(out vec4 fragColor,  vec2 fragCoord ){
             // normalized coordinates
             var z = U.sub(-1f,0f);
 
-            U = U.sub(.5f,0f);
-            U = U.mul(mat2(z.x(), z.y(), -z.y(),z.x())).div(vec2.dot(U,U));
-            // offset   spiral, zoom   phase            // spiraling
-            U = U.add(.5f,0f);
+            U = U.sub(.5f,0f).mul(mat2(z.x(), z.y(), -z.y(),z.x())).div(vec2.dot(U,U)).add(.5f,0f);
 
             U = vec2(//U =   log(length(U))*vec2(.5, -.5) + iTime/8. + atan(U.y, U.x)/6.2832 * vec2(6, 1);
                     F32.log(U.length())).mul(.5f, -.5f)
@@ -809,6 +806,6 @@ void mainImage(out vec4 fragColor,  vec2 fragCoord ){
                 this.shader=shader;
             }
         }
-        new Main(acc, 1024+512, 1024, SHADER.S25.shader);
+        new Main(acc, 1024+512, 1024, SHADER.Spiral.shader);
     }
 }

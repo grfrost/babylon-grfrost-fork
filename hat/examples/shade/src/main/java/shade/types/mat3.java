@@ -26,7 +26,6 @@ package shade.types;
 
 import jdk.incubator.code.Reflect;
 
-//immutable form
 public interface mat3 {
 
     float _00();
@@ -38,6 +37,9 @@ public interface mat3 {
     float _20();
     float _21();
     float _22();
+
+
+
     // A mutable variant needed for interface mapping
     interface Field extends mat3 {
         @Reflect
@@ -51,21 +53,10 @@ public interface mat3 {
         void _20(float _20);
         void _21(float _21);
         void _22(float _22);
-        default mat3 of(float _00, float _01, float _02, float _10, float _11, float _12, float _20, float _21, float _22) {
-            _00(_00);_01(_01);_02(_02);_10(_10);_11(_11);_12(_12);_20(_20);_21(_21);_22(_22);
-            return this;
-        }
-        default mat3 of(mat3 mat3){
-            of(mat3._00(),mat3._01(),mat3._02(),mat3._10(),mat3._11(),mat3._12(),mat3._20(),mat3._21(),mat3._22() );
-            return this;
-        }
     }
-
-    record Impl(float _00, float _01, float _02, float _10, float _11, float _12, float _20, float _21, float _22) implements mat3 {
-    }
-
 
     static mat3 mat3(float _00, float _01, float _02,float _10, float _11, float _12, float _20, float _21, float _22) {
+        record Impl(float _00, float _01, float _02, float _10, float _11, float _12, float _20, float _21, float _22) implements mat3 { }
         return new Impl(_00, _01,_02, _10, _11, _12, _20, _21, _22);
     }
     static mat3 mat3(mat3 mat3) {return mat3(mat3._00(), mat3._01(), mat3._02(), mat3._10(), mat3._11(), mat3._12(), mat3._20(), mat3._21(), mat3._22());}
